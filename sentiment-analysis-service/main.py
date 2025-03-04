@@ -3,7 +3,9 @@ from pydantic import BaseModel
 from textblob import TextBlob
 import nltk
 
-nltk.download('punkt')
+if not nltk.data.find('tokenizers/punkt'):
+    nltk.download('punkt')
+
 app = FastAPI()
 
 class TextInput(BaseModel):
@@ -11,13 +13,15 @@ class TextInput(BaseModel):
 
 def analyze_sentiment(text: str):
     blob = TextBlob(text)
-    polarity = blob.sentiment.polarity  # type: ignore
+    sentiment = blob.sentiment
+    polarity = sentiment.polarity #type: ignore
+    print(f"Polarity: {polarity}")
 
-    if polarity >= 1:
+    if polarity > 0.1:
         return 'Positive'
-    elif polarity < 0:
+    elif polarity < -0.1:
         return 'Negative'
-    else: 
+    else:
         return 'Neutral'
 
 @app.post('/analyze')
