@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, field_validator
 from textblob import TextBlob
 import nltk
@@ -17,7 +17,7 @@ class TextInput(BaseModel):
         if len(value) == 0:
             raise ValueError('Text must not be empty')
         return value
-        
+
 def analyze_sentiment(text: str) -> str:
     # Analyzing text sentiment using TextBlob
     blob = TextBlob(text)
@@ -36,4 +36,10 @@ def analyze_sentiment(text: str) -> str:
 def analyze(text_input: TextInput):
     # Endpoint to analyze the sentiment of a given text
     sentiment = analyze_sentiment(text_input.text)
-    return {'text': text_input.text, 'sentiment': sentiment}
+    
+    if sentiment == 'Positive':
+        return {"text": text_input.text, "sentiment": sentiment, "message": "This text is positive"}
+    elif sentiment == 'Negative':
+        return {"text": text_input.text, "sentiment": sentiment, "message": "This text is negative"}
+    else:    
+        return {"text": text_input.text, "sentiment": sentiment, "message": "This text is neutral"}
