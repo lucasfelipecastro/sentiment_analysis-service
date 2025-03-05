@@ -35,8 +35,14 @@ def analyze_sentiment(text: str) -> str:
 @app.post('/analyze')
 def analyze(text_input: TextInput):
     # Endpoint to analyze the sentiment of a given text
-    sentiment = analyze_sentiment(text_input.text)
-    
+    if not text_input.text.strip():
+        raise HTTPException(status_code=422, detail="Text must not be empty")
+
+    try:
+        sentiment = analyze_sentiment(text_input.text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Error: {str(e)}")
+
     if sentiment == 'Positive':
         return {"text": text_input.text, "sentiment": sentiment, "message": "This text is positive"}
     elif sentiment == 'Negative':
