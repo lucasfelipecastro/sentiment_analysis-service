@@ -98,7 +98,5 @@ Once the server is running, you can interact with it using Postman.
     "message": "This text is neutral."
     }
   ```
-### 🔴 You can see images to API running on Postman in /images
-
 ### License
 This project is licensed under the MIT License - see the LICENSE file for details.
